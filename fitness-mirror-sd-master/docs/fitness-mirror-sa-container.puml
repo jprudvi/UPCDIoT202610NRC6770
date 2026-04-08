@@ -1,0 +1,82 @@
+@startuml fitness-mirror-sa-container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+' Styling approximations for Structurizr look
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam Handwritten false
+skinparam Padding 2
+
+' Container Diagram
+title Container Diagram for Smart Fitness Mirror Platform
+
+!define RECTANGLE class
+
+Person(visitor, "Visitor", "Browses public website content", $tags="Visitor")
+Person(fitnessUser, "Fitness User", "Trains and tracks progress")
+Person(fitnessCoach, "Fitness Coach", "Provides exercise data")
+Person(crmStaff, "CRM Staff", "Manages subscriptions")
+System_Ext(stripe, "Stripe", "Processes payments", $tags="External")
+System_Ext(mirrorHardware, "Smart Mirror Hardware", "Camera, sensors, display", $tags="External,Hardware")
+
+System_Boundary(smartFitnessPlatform, "Smart Fitness Mirror Platform") {
+  Container(mobileApp, "Mobile App", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Native app for training and analytics", $tags="MobileApp")
+  Container(website, "Website", "TypeScript, Angular", "Serves public content", $tags="Server")
+  Container(webClientApp, "Web Client App", "TypeScript, Angular", "PWA for authenticated users", $tags="Browser")
+  Container(apiGateway, "API Gateway", "AWS API Gateway", "Routes requests", $tags="Gateway")
+  Container(embeddedApp, "Embedded App", "C++", "Controls mirror hardware", $tags="IoT")
+  Container(edgeApp, "Edge App", "Python", "AI coaching and analytics", $tags="Edge")
+  Container(edgeDB, "Edge DB", "SQLite", "Stores edge data", $tags="Database")
+  Container(mobileDB, "Mobile DB", "SQLite", "Caches mobile data", $tags="Database")
+  Container(iamService, "IAM Service", "Java, Spring Boot", "Manages identity", $tags="Microservice")
+  Container(iamDB, "IAM DB", "PostgreSQL", "Stores credentials", $tags="Database")
+  Container(performanceService, "Performance Service", "Java, Spring Boot", "Manages performance data", $tags="Microservice")
+  Container(performanceDB, "Performance DB", "Oracle", "Stores performance data", $tags="Database")
+  Container(trendsService, "Trends Service", "Java, Spring Boot", "Manages trends", $tags="Microservice")
+  Container(trendsDB, "Trends DB", "Oracle", "Stores trends", $tags="Database")
+  Container(subscriptionService, "Subscription Service", "Java, Spring Boot", "Manages subscriptions", $tags="Microservice")
+  Container(subscriptionDB, "Subscription DB", "Oracle", "Stores subscription data", $tags="Database")
+  Container(analyticsService, "Analytics Service", "Java, Spring Boot", "Generates insights", $tags="Microservice")
+  Container(analyticsDB, "Analytics DB", "Oracle", "Stores analytics data", $tags="Database")
+}
+
+Rel(visitor, website, "Browses public content")
+Rel(visitor, iamService, "Signs up or applies")
+Rel(fitnessUser, mobileApp, "Uses for training")
+Rel(fitnessUser, webClientApp, "Manages account")
+Rel(fitnessCoach, webClientApp, "Provides data")
+Rel(crmStaff, webClientApp, "Manages subscriptions")
+Rel(crmStaff, stripe, "Initiates payments")
+Rel(mobileApp, edgeApp, "Syncs data via Facade")
+Rel(mobileApp, embeddedApp, "Controls group sessions")
+Rel(mobileApp, mobileDB, "Caches data")
+Rel(mobileApp, apiGateway, "Accesses cloud services")
+Rel(mobileApp, iamService, "Authenticates users")
+Rel(website, iamService, "Handles sign-up/login")
+Rel(webClientApp, website, "Fetches PWA files")
+Rel(webClientApp, apiGateway, "Interacts with services")
+Rel(webClientApp, iamService, "Authenticates/authorizes")
+Rel(apiGateway, iamService, "Routes auth requests")
+Rel(apiGateway, performanceService, "Routes performance data")
+Rel(apiGateway, trendsService, "Routes trends data")
+Rel(apiGateway, subscriptionService, "Routes subscription requests")
+Rel(apiGateway, analyticsService, "Routes analytics requests")
+Rel(embeddedApp, mirrorHardware, "Controls hardware")
+Rel(embeddedApp, edgeApp, "Sends session data")
+Rel(edgeApp, edgeDB, "Stores/retrieves data")
+Rel(edgeApp, apiGateway, "Sends anonymous data")
+Rel(iamService, iamDB, "Manages credentials")
+Rel(iamService, subscriptionService, "Links users to subscriptions")
+Rel(performanceService, performanceDB, "Stores/retrieves data")
+Rel(trendsService, trendsDB, "Stores/retrieves data")
+Rel(subscriptionService, subscriptionDB, "Stores/retrieves data")
+Rel(subscriptionService, stripe, "Processes payments")
+Rel(analyticsService, analyticsDB, "Stores/retrieves data")
+Rel(analyticsService, trendsService, "Fetches trends")
+Rel(analyticsService, performanceService, "Fetches performance")
+
+SHOW_LEGEND()
+@enduml
+

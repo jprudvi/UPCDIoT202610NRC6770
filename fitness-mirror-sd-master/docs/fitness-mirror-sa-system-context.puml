@@ -1,0 +1,38 @@
+@startuml fitness-mirror-sa-system-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' Styling approximations for Structurizr look
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam Handwritten false
+skinparam Padding 2
+
+' System Context Diagram
+title System Context Diagram for Smart Fitness Mirror Platform
+
+Person(visitor, "Visitor", "Browses public website content", $tags="Visitor")
+Person(fitnessUser, "Fitness User", "Trains and tracks progress")
+Person(fitnessCoach, "Fitness Coach", "Provides exercise data")
+Person(techSupport, "Tech Support", "Monitors system")
+Person(rndTeam, "R&D Team", "Analyzes trends")
+Person(platformOwner, "Platform Owner", "Approves decisions")
+Person(crmStaff, "CRM Staff", "Manages subscriptions")
+
+System(smartFitnessPlatform, "Smart Fitness Mirror Platform", "IoT-based fitness platform with AI coaching, analytics, and CRM")
+System_Ext(stripe, "Stripe", "Processes payments", $tags="External")
+System_Ext(mirrorHardware, "Smart Mirror Hardware", "Camera, sensors, display", $tags="External,Hardware")
+
+Rel(visitor, smartFitnessPlatform, "Browses public content and signs up")
+Rel(fitnessUser, smartFitnessPlatform, "Uses for training and analytics")
+Rel(fitnessCoach, smartFitnessPlatform, "Provides data")
+Rel(techSupport, smartFitnessPlatform, "Monitors performance")
+Rel(rndTeam, smartFitnessPlatform, "Analyzes trends")
+Rel(platformOwner, smartFitnessPlatform, "Reviews analytics")
+Rel(crmStaff, smartFitnessPlatform, "Manages subscriptions")
+Rel(crmStaff, stripe, "Initiates payments")
+Rel(platformOwner, stripe, "Oversees payments")
+Rel(smartFitnessPlatform, mirrorHardware, "Controls hardware")
+
+SHOW_LEGEND()
+@enduml
+

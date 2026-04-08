@@ -1,0 +1,53 @@
+@startuml fitness-mirror-sa-component-mobile-iam
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+' Styling approximations for Structurizr look
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam Handwritten false
+skinparam Padding 2
+
+' Component Diagram (Mobile App and IAM Service)
+title Component Diagram for Mobile App and IAM Service
+
+Person(fitnessUser, "Fitness User", "Trains and tracks progress")
+Container(edgeApp, "Edge App", "Python", "AI coaching", $tags="Edge")
+Container(embeddedApp, "Embedded App", "C++", "Controls hardware", $tags="IoT")
+Container(mobileDB, "Mobile DB", "SQLite", "Caches data", $tags="Database")
+Container(mobileApp, "Mobile App", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Native app for training and analytics", $tags="MobileApp")
+Container(iamService, "IAM Service", "Java, Spring Boot", "Manages identity", $tags="Microservice")
+Container(iamDB, "IAM DB", "PostgreSQL", "Stores credentials", $tags="Database")
+Container(subscriptionService, "Subscription Service", "Java, Spring Boot", "Manages subscriptions", $tags="Microservice")
+
+Container_Boundary(mobileAppBoundary, "Mobile App") {
+  Component(mobileFacade, "Mobile Facade", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Simplifies edge interactions", $tags="Facade")
+  Component(analyticsUI, "Analytics UI", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Displays trends", $tags="UI")
+  Component(recommendationsUI, "Recommendations UI", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Shows recommendations", $tags="UI")
+  Component(trainingPlansUI, "Training Plans UI", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Shows plans", $tags="UI")
+  Component(socialSharing, "Social Sharing", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android)", "Shares achievements", $tags="UI")
+  Component(groupSession, "Group Session", "Swift/SwiftUI (iOS), Kotlin/Jetpack Compose (Android), WebRTC", "Manages group sessions", $tags="UI")
+}
+
+Container_Boundary(iamServiceBoundary, "IAM Service") {
+  Component(iamLogic, "IAM Logic", "Java, Spring Boot", "Handles auth and identity")
+}
+
+Rel(fitnessUser, mobileApp, "Uses for training")
+Rel(mobileFacade, edgeApp, "Fetches analytics, recommendations, plans")
+Rel(analyticsUI, mobileFacade, "Requests analytics")
+Rel(analyticsUI, mobileDB, "Caches analytics")
+Rel(recommendationsUI, mobileFacade, "Requests recommendations")
+Rel(recommendationsUI, mobileDB, "Caches recommendations")
+Rel(trainingPlansUI, mobileFacade, "Requests plans")
+Rel(trainingPlansUI, mobileDB, "Caches plans")
+Rel(socialSharing, mobileFacade, "Shares achievements")
+Rel(groupSession, embeddedApp, "Streams group sessions")
+Rel(mobileApp, iamService, "Authenticates users")
+Rel(iamLogic, iamDB, "Manages credentials")
+Rel(iamService, subscriptionService, "Links users to subscriptions")
+
+SHOW_LEGEND()
+@enduml
+
